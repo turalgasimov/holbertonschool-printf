@@ -128,6 +128,20 @@ unsigned int print_string(va_list args, buffer_t *buf,
 	return (_memcpy(buf, s, len));
 }
 
+unsigned int print_percent(va_list args, buffer_t *buf,
+	unsigned char f, int w, int p, unsigned char l)
+{
+	char c = '%';
+
+	(void)args;
+	(void)f;
+	(void)w;
+	(void)p;
+	(void)l;
+
+	return (_memcpy(buf, &c, 1));
+}
+
 unsigned int print_int(va_list args, buffer_t *buf,
 	unsigned char f, int w, int p, unsigned char l)
 {
@@ -179,7 +193,7 @@ unsigned int (*handle_specifiers(const char *format))(
 	if (*format == 'd' || *format == 'i')
 		return (print_int);
 	if (*format == '%')
-		return (print_char);
+	return (print_percent);
 	return (NULL);
 }
 
