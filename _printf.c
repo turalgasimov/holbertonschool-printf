@@ -231,21 +231,29 @@ int run_printf(const char *format, va_list args, buffer_t *output)
 	for (i = 0; format && format[i]; i++)
 	{
 		if (format[i] == '%')
-		{
-			tmp = 0;
-			flags = handle_flags(format + i + 1, &tmp);
-			wid = handle_width(args, format + i + 1, &tmp);
-			prec = handle_precision(args, format + i + 1, &tmp);
-			len = handle_length(format + i + 1, &tmp);
+{
+	if (format[i + 1] == '\0')
+	{
+		free_buffer(output);
+		va_end(args);
+		return (-1);
+	}
 
-			f = handle_specifiers(format + i + 1);
-			if (f)
-			{
-				i++;
-				ret += f(args, output, flags, wid, prec, len);
-				continue;
-			}
-		}
+	tmp = 0;
+	flags = handle_flags(format + i + 1, &tmp);
+	wid = handle_width(args, format + i + 1, &tmp);
+	prec = handle_precision(args, format + i + 1, &tmp);
+	len = handle_length(format + i + 1, &tmp);
+
+	f = handle_specifiers(format + i + 1);
+	if (f)
+	{
+		i++;
+		ret += f(args, output, flags, wid, prec, len);
+		continue;
+	}
+}
+
 		ret += _memcpy(output, &format[i], 1);
 	}
 	cleanup(args, output);
