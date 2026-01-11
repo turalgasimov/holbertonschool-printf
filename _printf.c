@@ -47,11 +47,18 @@ void free_buffer(buffer_t *buffer)
 int _memcpy(buffer_t *buffer, const char *src, unsigned int n)
 {
 	unsigned int i;
+	char *new_buf;
 
 	for (i = 0; i < n; i++)
 	{
 		if (buffer->len >= buffer->size)
-			return (0);
+		{
+			buffer->size *= 2;
+			new_buf = realloc(buffer->start, buffer->size);
+			if (!new_buf)
+				return (0);
+			buffer->start = new_buf;
+		}
 		buffer->start[buffer->len++] = src[i];
 	}
 	return (n);
